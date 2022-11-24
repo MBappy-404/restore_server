@@ -26,7 +26,17 @@ async function run() {
         const productsCollection = client.db('restore01').collection('products');
 
 
-        
+        app.get('/category', async(req, res)=>{
+            const query = {};
+            const category = await productsCollection.find(query).toArray();
+            res.send(category);
+        })
+
+        // app.get('/category/:id', async(req, res)=>{
+        //     const id = {_id: ObjectId(id)};
+        //     const products = await productsCollection.findOne(id).toArray();
+        //     res.send(products)
+        // })
 
     }
     finally{
