@@ -1,7 +1,7 @@
 
 const express = require('express');
 const cors = require('cors');
-const { MongoClient,ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const jwt = require('jsonwebtoken');
 require('dotenv').config();
 // const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -22,24 +22,38 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
 
-    try{
-        const productsCollection = client.db('restore01').collection('products');
+    try {
+        const categoryCollection = client.db('restore01').collection('products');
+        const productsCollection = client.db('restore01').collection('productDetails');
 
 
-        app.get('/category', async(req, res)=>{
+        app.get('/categories', async (req, res) => {
             const query = {};
-            const category = await productsCollection.find(query).toArray();
+            const category = await categoryCollection.find(query).toArray();
             res.send(category);
         })
 
-        // app.get('/category/:id', async(req, res)=>{
-        //     const id = {_id: ObjectId(id)};
-        //     const products = await productsCollection.findOne(id).toArray();
-        //     res.send(products)
-        // })
+        app.get('/category', async(req, res)=>{
+            const query = {};
+            const products = await productsCollection.find(query).toArray();
+            res.send(products)
+        })
 
+        app.get('/category/:name', async(req,res)=>{
+            const name = req.params.name;
+            const query = {Category_Name: name}
+            const result = await productsCollection.find(query).toArray();
+            res.send(result);
+
+        })
+        
+        app.post('/category', async(req,res)=>{
+            const query = req.body;
+            const result = await productsCollection.insertOne(query);
+            res.send(result)
+        })
     }
-    finally{
+    finally {
 
     }
 
@@ -50,7 +64,7 @@ run().catch(err => console.log(err))
 
 
 app.get('/', async (req, res) => {
-     res.send('Restore server is running');
- })
- 
- app.listen(port, () => console.log(`Restore running on ${port}`))
+    res.send('Restore server is running');
+})
+
+app.listen(port, () => console.log(`Restore running on ${port}`))
