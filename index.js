@@ -52,6 +52,23 @@ async function run() {
             const result = await productsCollection.insertOne(query);
             res.send(result)
         })
+
+
+
+        app.get('/myProducts', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+        });
+
+        app.delete('/doctors/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await doctorsCollection.deleteOne(filter);
+            res.send(result);
+        })
+
     }
     finally {
 
