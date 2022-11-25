@@ -65,12 +65,45 @@ async function run() {
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    reported: 'true'
+                    reported: 'true',
+                     
                 }
             }
             const result = await productsCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         });
+        app.put('/reported/:id',  async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                     
+                    ads: 'true'
+                }
+            }
+            const result = await productsCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        });
+        // app.get('/category/user?email', async(req, res)=>{
+        //     const email = req.params.email;
+        //     const filter = {email: email};
+        //     const user = await productsCollection.findOne(filter).toArray();
+        //     res.send(user)
+        // })
+        // app.put('/category/:email',  async (req, res) => {
+        //     const email = req.params.email;
+        //     const filter = { email : email }
+        //     const options = { upsert: true }
+        //     const updatedDoc = {
+        //         $set: {
+        //             verify: 'true'
+        //         }
+        //     }
+        //     const result = await productsCollection.updateOne(filter, updatedDoc, options);
+        //     res.send(result);
+        //     // console.log(result);
+        // });
 
        
 
@@ -113,9 +146,13 @@ async function run() {
 
         //manage users
 
-        app.post('/users', async(req, res)=>{
+        app.put('/users', async(req, res)=>{
             const users = req.body;
-            const result = await usersCollection.insertOne(users);
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: users
+            }
+            const result = await usersCollection.updateOne(users,updatedDoc,options);
             res.send(result);
         })
 
