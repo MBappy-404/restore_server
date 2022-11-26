@@ -51,7 +51,7 @@ async function run() {
 
         //reported item 
 
-        app.delete('/category/:id',  async (req, res) => {
+        app.delete('/category/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const result = await productsCollection.deleteOne(filter);
@@ -59,53 +59,47 @@ async function run() {
         });
 
 
-        app.put('/category/:id',  async (req, res) => {
+        app.put('/category/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
                     reported: 'true',
-                     
+
                 }
             }
             const result = await productsCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         });
-        app.put('/reported/:id',  async (req, res) => {
+        app.put('/reported/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                     
                     ads: 'true'
                 }
             }
             const result = await productsCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         });
-        // app.get('/category/user?email', async(req, res)=>{
-        //     const email = req.params.email;
-        //     const filter = {email: email};
-        //     const user = await productsCollection.findOne(filter).toArray();
-        //     res.send(user)
-        // })
-        // app.put('/category/:email',  async (req, res) => {
-        //     const email = req.params.email;
-        //     const filter = { email : email }
-        //     const options = { upsert: true }
-        //     const updatedDoc = {
-        //         $set: {
-        //             verify: 'true'
-        //         }
-        //     }
-        //     const result = await productsCollection.updateOne(filter, updatedDoc, options);
-        //     res.send(result);
-        //     // console.log(result);
-        // });
-
        
+        app.put('/category',  async (req, res) => {
+            const email = req.query.email;
+            const query = { email : email }
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    verify: 'true'
+                }
+            }
+            const result = await productsCollection.updateMany(query, updatedDoc, options);
+            res.send(result);
+            // console.log(email);
+        });
+
+
 
         app.post('/category', async (req, res) => {
             const query = req.body;
@@ -131,13 +125,13 @@ async function run() {
 
         // orders 
 
-        app.post('/orders', async(req,res)=>{
+        app.post('/orders', async (req, res) => {
             const orders = req.body;
             const result = await ordersCollection.insertOne(orders);
             res.send(result)
         })
 
-         app.get('/orders', async (req, res) => {
+        app.get('/orders', async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
             const orders = await ordersCollection.find(query).toArray();
@@ -146,13 +140,13 @@ async function run() {
 
         //manage users
 
-        app.put('/users', async(req, res)=>{
+        app.put('/users', async (req, res) => {
             const users = req.body;
             const options = { upsert: true };
             const updatedDoc = {
                 $set: users
             }
-            const result = await usersCollection.updateOne(users,updatedDoc,options);
+            const result = await usersCollection.updateOne(users, updatedDoc, options);
             res.send(result);
         })
 
@@ -163,7 +157,7 @@ async function run() {
             res.send(users);
         })
 
-        app.delete('/users/:id', async(req,res)=>{
+        app.delete('/users/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const deleteUser = await usersCollection.deleteOne(filter);
@@ -171,18 +165,26 @@ async function run() {
         })
 
         //seller verify
-        app.put('/users/:id',  async (req, res) => {
-            const id = req.params.id;
-            const filter = { _id: ObjectId(id) }
-            const options = { upsert: true };
-            const updatedDoc = {
-                $set: {
-                    verify: 'true'
-                }
-            }
-            const result = await usersCollection.updateOne(filter, updatedDoc, options);
+        // app.put('/users/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const filter = { _id: ObjectId(id) }
+        //     const options = { upsert: true };
+        //     const updatedDoc = {
+        //         $set: {
+        //             verify: 'true'
+        //         }
+        //     }
+        //     const result = await usersCollection.updateOne(filter, updatedDoc, options);
+        //     res.send(result);
+        // });
+
+        app.get('/users/verify', async (req, res) => {
+            const email = req.query.email;
+            const query = { email : email }
+            const result = await usersCollection.find(query).toArray();
             res.send(result);
-        });
+
+        })
 
     }
     finally {
