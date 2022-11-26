@@ -181,10 +181,17 @@ async function run() {
         app.get('/users/verify', async (req, res) => {
             const email = req.query.email;
             const query = { email : email }
-            const result = await usersCollection.find(query).toArray();
-            res.send(result);
+            const user = await usersCollection.findOne(query);
+            res.send(user);
 
         })
+
+        // app.get('/users/admin/:email', async (req, res) => {
+        //     const email = req.params.email;
+        //     const query = { email }
+        //     const user = await usersCollection.findOne(query);
+        //     res.send({ isAdmin: user?.role === 'admin' });
+        // })
 
     }
     finally {
